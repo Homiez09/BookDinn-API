@@ -12,6 +12,7 @@ export const product_put = new Elysia({
       title: t.String(),
       description: t.String(),
       price: t.Number(),
+      promotion: t.Boolean(),
       remaining: t.Number(),
     }),
   })
@@ -47,6 +48,7 @@ export const product_put = new Elysia({
           title: body.title,
           description: body.description,
           price: body.price,
+          promotion: body.promotion,
           remaining: body.remaining,
         },
       });
@@ -98,6 +100,26 @@ export const product_put = new Elysia({
                           type: "number",
                         },
                       },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Invalid request",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      default: "Invalid request",
+                    },
+                    message: {
+                      type: "string",
+                      default: "Invalid request",
                     },
                   },
                 },

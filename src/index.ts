@@ -1,24 +1,35 @@
-import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-import { product_delete, product_get, product_post, product_put } from "./modules";
+import {
+  product_delete,
+  product_get,
+  product_post,
+  product_put,
+  sign_in,
+  sign_up,
+  cart_delete,
+  cart_get,
+  cart_post,
+  cart_put,
+  user_delete,
+} from "./modules";
+import { swaggerDocument } from "./swagger";
 
-const app = new Elysia()
-  .use(
-    swagger({
-      documentation: {
-        info: {
-          title: "BookDinn-API",
-          version: "0.1.0",
-        },
-        tags: [
-          { name: "App", description: "General endpoints" },        ],
-      },
-    })
-  )
+export const app = new Elysia()
+  .use(swaggerDocument)
+  .use(sign_in)
+  .use(sign_up)
+  .use(user_delete)
+
   .use(product_get)
   .use(product_post)
   .use(product_put)
   .use(product_delete)
+
+  .use(cart_post)
+  .use(cart_get)
+  .use(cart_put)
+  .use(cart_delete)
+
   .listen(3000);
 
 console.log(

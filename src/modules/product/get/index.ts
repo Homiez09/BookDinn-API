@@ -1,5 +1,5 @@
 import { db } from "@/database/db";
-import Elysia, { error, t } from "elysia";
+import Elysia, { error } from "elysia";
 
 export const product_get = new Elysia({
   prefix: "/api/product",
@@ -8,59 +8,102 @@ export const product_get = new Elysia({
   },
 })
   .get(
-    "/",
+    "/getByPage",
     async ({ query }) => {
-      if (query.search) {
-        const products = await db.product.findMany({
-          where: {
-            OR: [
-              {
-                title: {
-                  contains: query.search,
-                },
-              },
-              {
-                description: {
-                  contains: query.search,
-                },
-              },
-            ],
-          },
-        });
+      let products = null;
 
-        return products;
+      if (query.page) {
+        products = await db.product.findMany({
+          skip: (Number(query.page) - 1) * 8,
+          take: 8,
+        });
+      } else {
+        products = await db.product.findMany({
+          take: 8,
+        });
       }
 
-      const products = await db.product.findMany();
-      return products;
+      return {
+        data: products,
+        meta: {
+          pagination: {
+            page: query.page || 1,
+            pageSize: 8,
+            pageCount: Math.ceil(products.length / 8),
+            total: products.length,
+          },
+        },
+      };
     },
     {
       detail: {
         description: "Get all products",
+        detail: {
+          desctiprion: "Get all products by page",
+        }, 
+        parameters: [
+          {
+            name: "page",
+            in: "query",
+            description: "Page number for pagination",
+            required: false,
+            schema: {
+              type: "integer",
+              example: 1,
+            },
+          },
+        ],
         responses: {
           200: {
             description: "Successfully retrieved all products",
             content: {
               "application/json": {
                 schema: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      id: {
-                        type: "number",
+                  type: "object",
+                  properties: {
+                    data: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: {
+                            type: "number",
+                          },
+                          title: {
+                            type: "string",
+                          },
+                          description: {
+                            type: "string",
+                          },
+                          price: {
+                            type: "number",
+                          },
+                          remaining: {
+                            type: "number",
+                          },
+                        },
                       },
-                      title: {
-                        type: "string",
-                      },
-                      description: {
-                        type: "string",
-                      },
-                      price: {
-                        type: "number",
-                      },
-                      remaining: {
-                        type: "number",
+                    },
+                    meta: {
+                      type: "object",
+                      properties: {
+                        pagination: {
+                          type: "object",
+                          properties: {
+                            page: {
+                              type: "number",
+                            },
+                            pageSize: {
+                              type: "number",
+                            },
+                            pageCount: {
+                              type: "number",
+                            },
+                            total: {
+                              type: "number",
+                            },
+                          },
+                        },
                       },
                     },
                   },
@@ -75,7 +118,7 @@ export const product_get = new Elysia({
   .get(
     "/:id",
     async ({ params }) => {
-      const product = await db.product.findFirst({
+      const product = await db.product.findUnique({
         where: {
           id: Number(params.id),
         },
@@ -140,7 +183,7 @@ export const product_get = new Elysia({
                 },
               },
             },
-          }
+          },
         },
       },
     }

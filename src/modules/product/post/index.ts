@@ -13,12 +13,13 @@ export const product_post = new Elysia({
       title: t.String(),
       description: t.Optional(t.String()),
       price: t.Number(),
+      promotion: t.Optional(t.Boolean()),
       remaining: t.Number(),
       // todo: เพิ่ม picture_url, author ภายหลัง
     }),
   })
   .post(
-    "/",
+    "/create",
     async ({ body }) => {
       if (body.title.length < 3) {
         return error("Bad Request", {
@@ -46,6 +47,7 @@ export const product_post = new Elysia({
           title: body.title,
           description: body.description,
           price: body.price,
+          promotion: body.promotion,
           remaining: body.remaining,
         },
       });

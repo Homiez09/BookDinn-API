@@ -13,10 +13,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  Cart      Cart[]
+}
+
 model Product {
-  id            Int     @id @default(autoincrement())
-  title         String  @unique
-  description   String  @default("")
-  price         Float   @default(0)
-  remaining     Int     @default(0)
+  id          Int        @id @default(autoincrement())
+  title       String     @unique
+  description String     @default("")
+  price       Float      @default(0)
+  promotion   Boolean    @default(false)
+  remaining   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  CartItems   CartItem[]
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  isPaid    Boolean    @default(false)
+  CartItems CartItem[]
+  User      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int      @default(1)
+  productId Int
+  cartId    Int
+  Product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  Cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
