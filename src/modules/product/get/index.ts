@@ -116,7 +116,7 @@ export const product_get = new Elysia({
   .get(
     "/:id",
     async ({ params }) => {
-      const product = await db.product.findFirst({
+      const product = await db.product.findUnique({
         where: {
           id: Number(params.id),
         },

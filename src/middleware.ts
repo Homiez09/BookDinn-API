@@ -15,11 +15,6 @@ export const middleware = new Elysia()
 
 
 
-
-
-
-
-
   // .guard({
   //   beforeHandle({ bearer, set }) {
   //     if (!bearer) {

@@ -43,10 +43,11 @@ model Cart {
 }
 
 model CartItem {
-  id        Int     @id @default(autoincrement())
-  quantity  Int     @default(1)
+  id        Int      @id @default(autoincrement())
+  quantity  Int      @default(1)
   productId Int
   cartId    Int
-  Product   Product @relation(fields: [productId], references: [id])
-  Cart      Cart    @relation(fields: [cartId], references: [id])
+  Product   Product  @relation(fields: [productId], references: [id])
+  Cart      Cart     @relation(fields: [cartId], references: [id])
+  createdAt DateTime @default(now())
 }

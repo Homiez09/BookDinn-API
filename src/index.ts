@@ -7,27 +7,26 @@ import {
   product_put,
 } from "./modules";
 import { sign_in, sign_up } from "./modules/user";
-import { middleware } from "./middleware";
+import { cart_post } from "./modules/cart/post";
+import { swaggerDocument } from "./swagger";
+import { cart_get } from "./modules/cart/get";
+import { cart_put } from "./modules/cart/put";
 
 const app = new Elysia()
-  .use(
-    swagger({
-      documentation: {
-        info: {
-          title: "BookDinn-API",
-          version: "0.1.0",
-        },
-        tags: [{ name: "App", description: "General endpoints" }],
-      },
-    })
-  )
+  .use(swaggerDocument)
   .use(sign_in)
   .use(sign_up)
+
   .use(product_get)
   .use(product_post)
   .use(product_put)
   .use(product_delete)
-  
+
+  .use(cart_post)
+  .use(cart_get)
+  .use(cart_put)
+
+
   .listen(3000);
 
 console.log(

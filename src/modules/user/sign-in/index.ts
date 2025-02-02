@@ -58,9 +58,7 @@ export const sign_in = new Elysia({
         expire: Math.floor(Date.now() / 1000) + 86400,
       });
 
-      return error("OK", {
-        token: token,
-      });
+      return token;
     },
     {
       body: "user.sign-in",
