@@ -1,6 +1,5 @@
 import { db } from "@/database/db";
-import { middleware } from "@/middleware";
-import Elysia, { error, t } from "elysia";
+import Elysia, { error } from "elysia";
 
 export const product_get = new Elysia({
   prefix: "/api/product",
@@ -47,7 +46,7 @@ export const product_get = new Elysia({
             required: false,
             schema: {
               type: "integer",
-              example: 1, // ตัวอย่างค่า
+              example: 1,
             },
           },
         ],

@@ -55,6 +55,7 @@ export const sign_in = new Elysia({
       const token = await jwt.sign({
         id: user.id,
         email: user.email,
+        role: user.role,
         expire: Math.floor(Date.now() / 1000) + 86400,
       });
 

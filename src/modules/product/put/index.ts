@@ -12,6 +12,7 @@ export const product_put = new Elysia({
       title: t.String(),
       description: t.String(),
       price: t.Number(),
+      promotion: t.Boolean(),
       remaining: t.Number(),
     }),
   })
@@ -47,6 +48,7 @@ export const product_put = new Elysia({
           title: body.title,
           description: body.description,
           price: body.price,
+          promotion: body.promotion,
           remaining: body.remaining,
         },
       });

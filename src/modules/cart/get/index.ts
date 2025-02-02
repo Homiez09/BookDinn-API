@@ -1,4 +1,5 @@
 import { db } from "@/database/db";
+import { calculateHarryDiscount } from "@/libs/calculateHarryDiscount";
 import { middleware } from "@/middleware";
 import Elysia, { error, t } from "elysia";
 
@@ -10,7 +11,7 @@ export const cart_get = new Elysia({
 })
   .use(middleware)
   .get(
-    "/",
+    "/getAll",
     async ({ bearer, jwt }) => {
       const verifyJwt = (await jwt.verify(bearer)) as {
         id: string;
@@ -36,28 +37,26 @@ export const cart_get = new Elysia({
         where: {
           userId: verifyJwt.id,
         },
-        orderBy: {
-            createdAt: "desc",
+        include: {
+          CartItems: {
+            include: {
+              Product: true,
+            },
           },
-        
-      });
-
-      if (!cart) {
-        return error("Not Found", {
-          error: "Cart not found",
-          message: "Cart not found",
-        });
-      }
-
-      const cartItems = await db.cartItem.findMany({
-        where: {
-          cartId: cart.id,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
+      const discount = calculateHarryDiscount(cart!);
+      const beforeAmount = cart?.CartItems.reduce((acc, curr) => acc + curr.Product.price * curr.quantity, 0) || 0;
 
-      return {
-        ...cart, cartItems: cartItems
-      };
+      return { data: cart, meta: {
+        total: cart?.CartItems.reduce((acc, curr) => acc + curr.quantity, 0) || 0, 
+        beforeDiscount: cart?.CartItems.reduce((acc, curr) => acc + curr.Product.price * curr.quantity, 0) || 0,
+        discount: discount,
+        totalAmount: beforeAmount - (discount),
+      } };
     },
     {
       detail: {

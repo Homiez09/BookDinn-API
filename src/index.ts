@@ -1,22 +1,24 @@
-import swagger from "@elysiajs/swagger";
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
 import {
   product_delete,
   product_get,
   product_post,
   product_put,
+  sign_in,
+  sign_up,
+  cart_delete,
+  cart_get,
+  cart_post,
+  cart_put,
+  user_delete,
 } from "./modules";
-import { sign_in, sign_up } from "./modules/user";
-import { cart_post } from "./modules/cart/post";
 import { swaggerDocument } from "./swagger";
-import { cart_get } from "./modules/cart/get";
-import { cart_put } from "./modules/cart/put";
-import { cart_delete } from "./modules/cart/delete";
 
 export const app = new Elysia()
   .use(swaggerDocument)
   .use(sign_in)
   .use(sign_up)
+  .use(user_delete)
 
   .use(product_get)
   .use(product_post)

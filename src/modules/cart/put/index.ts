@@ -16,7 +16,7 @@ export const cart_put = new Elysia({
   })
   .use(middleware)
   .put(
-    "/",
+    "/update",
     async ({ bearer, jwt, body }) => {
       const verifyJwt = (await jwt.verify(bearer)) as {
         id: string;

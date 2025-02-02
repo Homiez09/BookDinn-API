@@ -8,7 +8,7 @@ export const product_delete = new Elysia({
   },
 })
 .delete(
-  "/:id",
+  "/delete/:id",
   async ({ params }) => {
     const productToDelete = await db.product.findUnique({
       where: { id: Number(params.id) },

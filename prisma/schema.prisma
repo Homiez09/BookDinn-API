@@ -27,6 +27,7 @@ model Product {
   title       String     @unique
   description String     @default("")
   price       Float      @default(0)
+  promotion   Boolean    @default(false)
   remaining   Int        @default(0)
   createdAt   DateTime   @default(now())
   CartItems   CartItem[]
@@ -39,7 +40,7 @@ model Cart {
   updatedAt DateTime   @updatedAt
   isPaid    Boolean    @default(false)
   CartItems CartItem[]
-  User      User       @relation(fields: [userId], references: [id])
+  User      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model CartItem {
@@ -47,7 +48,7 @@ model CartItem {
   quantity  Int      @default(1)
   productId Int
   cartId    Int
-  Product   Product  @relation(fields: [productId], references: [id])
-  Cart      Cart     @relation(fields: [cartId], references: [id])
+  Product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  Cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
