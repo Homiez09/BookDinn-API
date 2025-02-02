@@ -11,8 +11,9 @@ import { cart_post } from "./modules/cart/post";
 import { swaggerDocument } from "./swagger";
 import { cart_get } from "./modules/cart/get";
 import { cart_put } from "./modules/cart/put";
+import { cart_delete } from "./modules/cart/delete";
 
-const app = new Elysia()
+export const app = new Elysia()
   .use(swaggerDocument)
   .use(sign_in)
   .use(sign_up)
@@ -25,7 +26,7 @@ const app = new Elysia()
   .use(cart_post)
   .use(cart_get)
   .use(cart_put)
-
+  .use(cart_delete)
 
   .listen(3000);
 

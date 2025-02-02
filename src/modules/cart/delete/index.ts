@@ -2,22 +2,16 @@ import { db } from "@/database/db";
 import { middleware } from "@/middleware";
 import Elysia, { error, t } from "elysia";
 
-export const cart_put = new Elysia({
+export const cart_delete = new Elysia({
   prefix: "/api/cart",
   detail: {
     tags: ["Cart"],
   },
 })
-  .model({
-    "cartItem.delete": t.Object({
-      cartItemId: t.Number(),
-      quantity: t.Number(),
-    }),
-  })
   .use(middleware)
-  .put(
-    "/",
-    async ({ bearer, jwt, body }) => {
+  .delete(
+    "/:id",
+    async ({ bearer, jwt, params }) => {
       const verifyJwt = (await jwt.verify(bearer)) as {
         id: string;
         email: string;
@@ -39,48 +33,21 @@ export const cart_put = new Elysia({
         },
       });
 
-      const cartItem = await db.cartItem.findUnique({
+      await db.cartItem.deleteMany({
         where: {
-          id: body.cartItemId,
           cartId: cart?.id,
         },
       });
 
-      if (!cartItem) {
-        return error("Not Found", {
-          error: "Cart item not found",
-          message: "Cart item not found",
-        });
-      }
-
-    if (body.quantity <= 0) {
-      await db.cartItem.delete({
+      await db.cart.delete({
         where: {
-        id: body.cartItemId,
+          id: cart?.id,
         },
       });
 
-      return {
-        message: "Cart item deleted successfully",
-      };
-    } else {
-      const updatedCartItem = await db.cartItem.update({
-        where: {
-        id: body.cartItemId,
-        },
-        data: {
-        quantity: body.quantity,
-        },
-      });
-
-      return {
-        message: "Cart item updated successfully",
-        data: updatedCartItem,
-      };
-    }
+      return { message: `Cart ID: ${params.id} deleted` };
     },
     {
-      body: "cartItem.delete",
       beforeHandle({ bearer, set }) {
         if (!bearer) {
           set.status = 400;
