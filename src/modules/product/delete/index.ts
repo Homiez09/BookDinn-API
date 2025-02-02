@@ -79,6 +79,26 @@ export const product_delete = new Elysia({
             },
           },
         },
+        404: {
+          description: "Product not found",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  error: {
+                    type: "string",
+                    default: "Product not found",
+                  },
+                  message: {
+                    type: "string",
+                    default: "Product not found",
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
   }

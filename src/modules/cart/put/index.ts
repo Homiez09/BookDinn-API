@@ -81,6 +81,47 @@ export const cart_put = new Elysia({
     },
     {
       body: "cartItem.delete",
+      detail: {
+        description: "Delete cart item",
+        responses: {
+          200: {
+            description: "Successfully deleted the cart item",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: {
+                      type: "string",
+                      default: "Cart item deleted successfully",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: "Cart item not found",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      default: "Cart item not found",
+                    },
+                    message: {
+                      type: "string",
+                      default: "Cart item not found",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }
+      },
       beforeHandle({ bearer, set }) {
         if (!bearer) {
           set.status = 400;

@@ -106,6 +106,26 @@ export const product_put = new Elysia({
               },
             },
           },
+          400: {
+            description: "Invalid request",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      default: "Invalid request",
+                    },
+                    message: {
+                      type: "string",
+                      default: "Invalid request",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     }

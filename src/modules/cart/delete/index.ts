@@ -48,6 +48,27 @@ export const cart_delete = new Elysia({
       return { message: `Cart ID: ${params.id} deleted` };
     },
     {
+      detail: {
+        description: "Delete cart",
+        responses: {
+          200: {
+            description: "Successfully deleted the cart",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: {
+                      type: "string",
+                      default: "Cart deleted successfully",
+                    },
+                  },
+                },
+              },
+            },
+          },          
+        }
+      },
       beforeHandle({ bearer, set }) {
         if (!bearer) {
           set.status = 400;

@@ -161,82 +161,136 @@ export const cart_post = new Elysia({
       },
     }
   )
-  .post('/pay', async ({ bearer, jwt }) => {
-    const verifyJwt = (await jwt.verify(bearer)) as {
-      id: string;
-      email: string;
-      expired: number;
-    };
+  .post(
+    "/pay",
+    async ({ bearer, jwt }) => {
+      const verifyJwt = (await jwt.verify(bearer)) as {
+        id: string;
+        email: string;
+        expired: number;
+      };
 
-    if (!verifyJwt) {
-      return error("Unauthorized", {
-        error: "Unauthorized",
-        message: "Unauthorized",
+      if (!verifyJwt) {
+        return error("Unauthorized", {
+          error: "Unauthorized",
+          message: "Unauthorized",
+        });
+      }
+
+      if (!verifyJwt.id) {
+        return error("Not Found", {
+          error: "wrong token",
+          message: "wrong token",
+        });
+      }
+
+      const user = await db.user.findUnique({
+        where: {
+          id: verifyJwt.id,
+        },
       });
-    }
 
-    if (!verifyJwt.id) {
-      return error("Not Found", {
-        error: "wrong token",
-        message: "wrong token",
+      if (!user) {
+        return error("Not Found", {
+          error: "User not found",
+          message: "User not found",
+        });
+      }
+
+      const cart = await db.cart.findFirst({
+        where: {
+          userId: user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          CartItems: {
+            include: {
+              Product: true,
+            },
+          },
+        },
       });
-    }
 
-    const user = await db.user.findUnique({
-      where: {
-        id: verifyJwt.id,
-      },
-    });
+      if (!cart) {
+        return error("Not Found", {
+          error: "Cart not found",
+          message: "Cart not found",
+        });
+      }
 
-    if (!user) {
-      return error("Not Found", {
-        error: "User not found",
-        message: "User not found",
+      if (cart.isPaid) {
+        return error("Bad Request", {
+          error: "Cart already paid",
+          message: "Cart already paid",
+        });
+      }
+
+      await db.cart.update({
+        where: {
+          id: cart.id,
+        },
+        data: {
+          isPaid: true,
+        },
       });
-    }
 
-    const cart = await db.cart.findFirst({
-      where: {
-        userId: user.id,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        CartItems: {
-          include: {
-            Product: true,
+      return error("OK", {
+        message: "Cart paid successfully",
+      });
+    },
+    {
+      detail: {
+        description: "Pay cart",
+        responses: {
+          200: {
+            description: "Successfully paid the cart",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: {
+                      type: "string",
+                      default: "Cart paid successfully",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Cart already paid",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      default: "Cart already paid",
+                    },
+                    message: {
+                      type: "string",
+                      default: "Cart already paid",
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
-    });
+      beforeHandle({ bearer, set }) {
+        if (!bearer) {
+          set.status = 400;
+          set.headers[
+            "WWW-Authenticate"
+          ] = `Bearer realm='sign', error="invalid_request"`;
 
-    if (!cart) {
-      return error("Not Found", {
-        error: "Cart not found",
-        message: "Cart not found",
-      });
-    }
-
-    if (cart.isPaid) {
-      return error("Bad Request", {
-        error: "Cart already paid",
-        message: "Cart already paid",
-      });
-    }
-
-    await db.cart.update({
-      where: {
-        id: cart.id,
+          return "Unauthorized";
+        }
       },
-      data: {
-        isPaid: true,
-      },
-    });
-
-    return error("OK", {
-      message: "Cart paid successfully",
-    });
-  }
+    }
   );
-

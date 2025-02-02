@@ -66,6 +66,123 @@ export const cart_get = new Elysia({
             bearerAuth: ["cart.post"],
           },
         ],
+        description: "Get all cart",
+        responses: {
+          200: {
+            description: "Successfully retrieved the cart",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: {
+                          type: "number",
+                        },
+                        userId: {
+                          type: "string",
+                        },
+                        CartItems: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              id: {
+                                type: "number",
+                              },
+                              productId: {
+                                type: "number",
+                              },
+                              quantity: {
+                                type: "number",
+                              },
+                              Product: {
+                                type: "object",
+                                properties: {
+                                  id: {
+                                    type: "number",
+                                  },
+                                  title: {
+                                    type: "string",
+                                  },
+                                  description: {
+                                    type: "string",
+                                  },
+                                  price: {
+                                    type: "number",
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    meta: {
+                      type: "object",
+                      properties: {
+                        total: {
+                          type: "number",
+                        },
+                        beforeDiscount: {
+                          type: "number",
+                        },
+                        discount: {
+                          type: "number",
+                        },
+                        totalAmount: {
+                          type: "number",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      default: "Unauthorized",
+                    },
+                    message: {
+                      type: "string",
+                      default: "Unauthorized",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: "Not Found",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      default: "Not Found",
+                    },
+                    message: {
+                      type: "string",
+                      default: "Not Found",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }
       },
       beforeHandle({ bearer, set }) {
         if (!bearer) {

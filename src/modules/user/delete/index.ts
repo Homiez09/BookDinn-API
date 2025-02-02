@@ -54,6 +54,47 @@ export const user_delete = new Elysia({
     },
     {
       body: "user.delete",
+      detail: {
+        description: "Delete user",
+      },
+      responses: {
+        200: {
+          description: "Successfully deleted the user",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    default: "User deleted successfully",
+                  },
+                },
+              },
+            },
+          },
+        },
+        401: {
+          description: "Unauthorized",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  error: {
+                    type: "string",
+                    default: "Unauthorized",
+                  },
+                  message: {
+                    type: "string",
+                    default: "Unauthorized",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       beforeHandle({ bearer, set }) {
         if (!bearer) {
           set.status = 400;

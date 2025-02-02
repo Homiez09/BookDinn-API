@@ -8,7 +8,7 @@ export const product_get = new Elysia({
   },
 })
   .get(
-    "/",
+    "/getByPage",
     async ({ query }) => {
       let products = null;
 
@@ -38,6 +38,9 @@ export const product_get = new Elysia({
     {
       detail: {
         description: "Get all products",
+        detail: {
+          desctiprion: "Get all products by page",
+        }, 
         parameters: [
           {
             name: "page",
