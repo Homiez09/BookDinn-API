@@ -1,4 +1,5 @@
 import { db } from "@/database/db";
+import { middleware } from "@/middleware";
 import Elysia, { error, t } from "elysia";
 
 export const product_get = new Elysia({
@@ -11,7 +12,7 @@ export const product_get = new Elysia({
     "/",
     async ({ query }) => {
       let products = null;
-      
+
       if (query.page) {
         products = await db.product.findMany({
           skip: (Number(query.page) - 1) * 8,

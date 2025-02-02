@@ -6,7 +6,8 @@ export const product_delete = new Elysia({
   detail: {
     tags: ["Product"],
   },
-}).delete(
+})
+.delete(
   "/:id",
   async ({ params }) => {
     const productToDelete = await db.product.findUnique({
@@ -41,7 +42,6 @@ export const product_delete = new Elysia({
   {
     detail: {
       description: "Delete product",
-      summary: "Delete product",
       responses: {
         200: {
           description: "Successfully deleted the product",

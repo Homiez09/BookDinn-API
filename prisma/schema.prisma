@@ -14,38 +14,38 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   email     String   @unique
-  name      String
-  password  String
+  password  String   
+  role      String   @default("USER")
   createdAt DateTime @default(now())
-  carts     Cart[]
+  Cart      Cart[]
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  title         String    @unique
-  description   String    @default("")
-  price         Float     @default(0)
-  remaining     Int       @default(0)
-  createdAt     DateTime  @default(now())
+  id          Int        @id @default(autoincrement())
+  title       String     @unique
+  description String     @default("")
+  price       Float      @default(0)
+  remaining   Int        @default(0)
+  createdAt   DateTime   @default(now())
   CartItems   CartItem[]
 }
 
 model Cart {
-  id          Int       @id @default(autoincrement())
-  userId      Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  CartItems   CartItem[]
-  User        User      @relation(fields: [userId], references: [id])
+  id        Int        @id @default(autoincrement())
+  userId    String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  CartItems CartItem[]
+  User      User       @relation(fields: [userId], references: [id])
 }
 
 model CartItem {
-  id          Int       @id @default(autoincrement())
-  quantity    Int       @default(1)
-  productId   Int
-  cartId      Int
-  Product     Product   @relation(fields: [productId], references: [id])
-  Cart        Cart      @relation(fields: [cartId], references: [id])
+  id        Int     @id @default(autoincrement())
+  quantity  Int     @default(1)
+  productId Int
+  cartId    Int
+  Product   Product @relation(fields: [productId], references: [id])
+  Cart      Cart    @relation(fields: [cartId], references: [id])
 }
