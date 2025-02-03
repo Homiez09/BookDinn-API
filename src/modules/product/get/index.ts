@@ -23,13 +23,15 @@ export const product_get = new Elysia({
         });
       }
 
+      const pageCount = (await db.product.findMany()).length;
+
       return {
         data: products,
         meta: {
           pagination: {
             page: query.page || 1,
             pageSize: 8,
-            pageCount: Math.ceil(products.length / 8),
+            pageCount: Math.ceil(pageCount / 8),
             total: products.length,
           },
         },
