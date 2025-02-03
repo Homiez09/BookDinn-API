@@ -187,4 +187,49 @@ export const product_get = new Elysia({
         },
       },
     }
-  );
+  )
+  .get('/getByPromotion', async () => {
+    const products = await db.product.findMany({
+      where: {
+        promotion: true,
+      },
+    });
+
+    return products;
+  }, {
+    detail: {
+      description: "Get all products with promotion",
+      responses: {
+        200: {
+          description: "Successfully retrieved all products with promotion",
+          content: {
+            "application/json": {
+              schema: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: {
+                      type: "number",
+                    },
+                    title: {
+                      type: "string",
+                    },
+                    description: {
+                      type: "string",
+                    },
+                    price: {
+                      type: "number",
+                    },
+                    remaining: {
+                      type: "number",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
